@@ -18,6 +18,10 @@ href="/css/style.css">
 Bank Login
 </h2>
 
+<p th:if="${param.error}" style="color:red;text-align:center;">
+Invalid username or password.
+</p>
+
 
 <form method="post"
 th:action="@{/login}">

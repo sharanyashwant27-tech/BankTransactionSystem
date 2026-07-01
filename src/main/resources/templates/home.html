@@ -1,18 +1,26 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Bank Transaction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
 
 <body>
 
-<h1>
-Welcome to Transaction Dashboard
-</h1>
+<div class="page-container home-page">
 
+    <h1>Welcome to Transaction Dashboard</h1>
 
-<a href="/transactions">
+    <p class="user-info">You are logged in. View your personal transaction history below.</p>
 
-View Transactions
+    <a href="/transactions" class="btn-primary">View Transactions</a>
 
-</a>
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="btn-secondary">Logout</button>
+    </form>
 
+</div>
 
 </body>
 
