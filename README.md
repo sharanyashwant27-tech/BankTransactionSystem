@@ -52,18 +52,29 @@ docker compose logs -f
 
 ## Login Credentials
 
-All users share the password **`admin123`**.
+### Primary admin account
+
+| Field | Value |
+|-------|-------|
+| **Username** | `admin` |
+| **Password** | `admin123` |
+| **Email** | `admin@bank.com` |
+
+The admin account is created automatically on startup with **10 sample transactions** (salary deposit, bills, transfers, etc.).
+
+### Other demo users
+
+All other demo users share the password **`admin123`**.
 
 | Username | Email |
 |----------|-------|
-| admin | admin@bank.com |
 | admin1 | admin1@bank.com |
 | admin2 | admin2@bank.com |
 | admin3 | admin3@bank.com |
 | admin4 | admin4@bank.com |
 | admin5 | admin5@bank.com |
 
-Users and sample transactions are seeded automatically on first startup via `DataInitializer`.
+Users and sample transactions are seeded automatically on startup via `DataInitializer`.
 
 ## Analytics API Endpoints
 
