@@ -2,45 +2,58 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transactions - Bank Transaction System</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
+<body class="app-page transactions-page">
+
+<div th:replace="~{fragments/nav :: navbar('history')}"></div>
 
 <div class="page-container">
 
     <div class="page-header">
         <div>
             <h2>Transaction History</h2>
-            <p class="user-info">Logged in as: <strong th:text="${username}">user</strong></p>
+            <p class="user-info">Your personal account activity</p>
         </div>
         <a href="/home" class="btn-back">&#8592; Back to Home</a>
     </div>
 
     <div class="table-card">
-        <table class="txn-table" th:if="${!transactions.isEmpty()}">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Description</th>
-                <th>Amount ($)</th>
-                <th>Date</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="t, stat : ${transactions}">
-                <td th:text="${stat.count}">1</td>
-                <td th:text="${t.description}">Description</td>
-                <td class="amount" th:text="${#numbers.formatDecimal(t.amount, 1, 2)}">0.00</td>
-                <td th:text="${t.transactionDate}">2026-01-01</td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="table-card-header" th:if="${!transactions.isEmpty()}">
+            <h3>Recent Transactions</h3>
+            <p th:text="${transactions.size()} + ' transaction(s) on record'">0 transactions</p>
+        </div>
 
-        <p class="empty-msg" th:if="${transactions.isEmpty()}">
-            No transactions found for your account.
-        </p>
+        <div class="table-scroll" th:if="${!transactions.isEmpty()}">
+            <table class="txn-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t, stat : ${transactions}">
+                    <td class="row-num" th:text="${stat.count}">1</td>
+                    <td th:text="${t.description}">Description</td>
+                    <td class="amount" th:text="'$' + ${#numbers.formatDecimal(t.amount, 1, 2)}">$0.00</td>
+                    <td class="date-cell" th:text="${t.transactionDate}">2026-01-01</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${transactions.isEmpty()}">
+            <p class="empty-msg">
+                <span class="empty-icon">&#128196;</span><br>
+                No transactions found for your account.
+            </p>
+        </div>
     </div>
 
 </div>

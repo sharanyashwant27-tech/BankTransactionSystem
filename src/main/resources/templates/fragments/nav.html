@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav class="top-nav" th:fragment="navbar(activePage)">
+    <div class="nav-inner">
+        <a href="/home" class="nav-brand">
+            <span class="nav-brand-icon">&#127974;</span>
+            Bank Transaction System
+        </a>
+
+        <div class="nav-actions">
+            <div class="nav-links">
+                <a href="/transactions" class="nav-link" th:classappend="${activePage == 'history'} ? 'active' : ''">History</a>
+                <a href="/security" class="nav-link" th:classappend="${activePage == 'security'} ? 'active' : ''">Security</a>
+                <a href="/spending" class="nav-link" th:classappend="${activePage == 'spending'} ? 'active' : ''">Spending</a>
+            </div>
+
+            <div class="nav-user-menu" th:if="${username != null}">
+                <span class="nav-username">
+                    <span class="nav-user-icon">&#128100;</span>
+                    <span th:text="${username}">user</span>
+                </span>
+                <form th:action="@{/logout}" method="post" class="nav-logout-form">
+                    <button type="submit" class="nav-logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

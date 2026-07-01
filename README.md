@@ -15,10 +15,10 @@ A full-stack bank transaction management application with a Spring Boot web UI a
 
 | Layer | Technologies |
 |-------|--------------|
-| Backend | Java 21, Spring Boot 3.x, Spring Security, Spring Data JPA, Thymeleaf |
+| Web App | Java 21, Spring Boot 3.x, Spring Security, Spring Data JPA, Thymeleaf |
 | Analytics | Python 3.12, FastAPI, Pandas, SQLAlchemy, Matplotlib |
 | Database | MySQL 8.4 |
-| Build | Maven, Docker, Docker Compose |
+| Deployment | Docker, Docker Compose |
 
 ## Quick Start (Docker)
 
@@ -143,10 +143,10 @@ BankTransactionSystem/
 │   └── templates/       # Thymeleaf HTML pages
 └── analytics-service/
     ├── Dockerfile
-    ├── main.py          # Uvicorn entry point
+    ├── main.py
     ├── run.py
     └── app/
-        ├── main.py      # FastAPI routes
+        ├── main.py      # Analytics API routes
         ├── analytics_service.py
         ├── models.py
         └── database.py

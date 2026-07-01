@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#eff6ff"/>
+      <stop offset="40%" style="stop-color:#e0f2fe"/>
+      <stop offset="100%" style="stop-color:#f0fdf4"/>
+    </linearGradient>
+    <linearGradient id="bar1" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#2563eb"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="bar2" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#0891b2"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#hg)"/>
+  <!-- Dashboard grid -->
+  <g opacity="0.12" stroke="#2563eb" stroke-width="1">
+    <line x1="0" y1="200" x2="1920" y2="200"/>
+    <line x1="0" y1="400" x2="1920" y2="400"/>
+    <line x1="0" y1="600" x2="1920" y2="600"/>
+    <line x1="0" y1="800" x2="1920" y2="800"/>
+    <line x1="320" y1="0" x2="320" y2="1080"/>
+    <line x1="640" y1="0" x2="640" y2="1080"/>
+    <line x1="960" y1="0" x2="960" y2="1080"/>
+    <line x1="1280" y1="0" x2="1280" y2="1080"/>
+    <line x1="1600" y1="0" x2="1600" y2="1080"/>
+  </g>
+  <!-- Chart bars background -->
+  <rect x="200" y="500" width="80" height="350" rx="8" fill="url(#bar1)" opacity="0.15"/>
+  <rect x="320" y="400" width="80" height="450" rx="8" fill="url(#bar2)" opacity="0.12"/>
+  <rect x="440" y="550" width="80" height="300" rx="8" fill="url(#bar1)" opacity="0.1"/>
+  <rect x="560" y="350" width="80" height="500" rx="8" fill="url(#bar2)" opacity="0.14"/>
+  <rect x="1280" y="450" width="80" height="400" rx="8" fill="url(#bar1)" opacity="0.13"/>
+  <rect x="1400" y="380" width="80" height="470" rx="8" fill="url(#bar2)" opacity="0.11"/>
+  <rect x="1520" y="520" width="80" height="330" rx="8" fill="url(#bar1)" opacity="0.12"/>
+  <rect x="1640" y="420" width="80" height="430" rx="8" fill="url(#bar2)" opacity="0.1"/>
+  <!-- Pie chart -->
+  <circle cx="300" cy="250" r="120" fill="none" stroke="#2563eb" stroke-width="40" stroke-dasharray="200 550" opacity="0.12" transform="rotate(-90 300 250)"/>
+  <circle cx="300" cy="250" r="120" fill="none" stroke="#06b6d4" stroke-width="40" stroke-dasharray="150 550" stroke-dashoffset="-200" opacity="0.1" transform="rotate(-90 300 250)"/>
+  <!-- Line chart -->
+  <polyline points="1200,700 1300,550 1400,620 1500,480 1600,520 1700,380 1800,450" fill="none" stroke="#2563eb" stroke-width="4" opacity="0.15"/>
+  <circle cx="1300" cy="550" r="8" fill="#2563eb" opacity="0.2"/>
+  <circle cx="1500" cy="480" r="8" fill="#06b6d4" opacity="0.2"/>
+  <circle cx="1700" cy="380" r="8" fill="#2563eb" opacity="0.2"/>
+  <!-- Cards outline -->
+  <rect x="700" y="150" width="520" height="200" rx="16" fill="white" opacity="0.4" stroke="#2563eb" stroke-width="2" stroke-opacity="0.1"/>
+  <rect x="700" y="400" width="250" height="180" rx="16" fill="white" opacity="0.35" stroke="#06b6d4" stroke-width="2" stroke-opacity="0.1"/>
+  <rect x="970" y="400" width="250" height="180" rx="16" fill="white" opacity="0.35" stroke="#2563eb" stroke-width="2" stroke-opacity="0.1"/>
+</svg>
