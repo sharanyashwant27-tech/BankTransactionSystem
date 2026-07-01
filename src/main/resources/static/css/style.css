@@ -886,6 +886,333 @@ body.app-page {
     transition: width 0.6s ease;
 }
 
+/* ── Transaction CRUD panel (bottom of transactions page) ── */
+
+.flash-msg {
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.flash-success {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #6ee7b7;
+}
+
+.flash-error {
+    background: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.crud-inline-form {
+    display: inline;
+    margin: 0;
+}
+
+.crud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+
+.crud-btn-edit {
+    background: #eff6ff;
+    color: var(--primary);
+    border: 1px solid #bfdbfe;
+}
+
+.crud-btn-edit:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.crud-btn-delete {
+    background: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.crud-btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.txn-table .row-editing {
+    background: #eff6ff !important;
+    outline: 2px solid #93c5fd;
+    outline-offset: -2px;
+}
+
+.crud-panel {
+    margin-top: 32px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.98) 0%, rgba(239, 246, 255, 0.95) 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.crud-panel-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    color: white;
+}
+
+.crud-panel-header h3 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.crud-panel-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.crud-panel-header strong {
+    font-weight: 700;
+}
+
+.crud-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0;
+}
+
+.crud-card {
+    padding: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.crud-card-create {
+    border-right: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.crud-card-update {
+    background: rgba(248, 250, 252, 0.9);
+}
+
+.crud-card-placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.crud-card-title {
+    margin-bottom: 20px;
+}
+
+.crud-card-title h4 {
+    margin: 10px 0 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.crud-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.crud-badge-create {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.crud-badge-update {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.crud-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.crud-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.crud-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.crud-field label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.crud-field input {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 0;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: white;
+}
+
+.crud-field input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.field-error {
+    font-size: 0.75rem;
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.crud-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.crud-submit {
+    width: auto;
+    padding: 12px 22px;
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+}
+
+.crud-submit-create {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.crud-submit-create:hover {
+    box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+}
+
+.crud-submit-update {
+    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.crud-cancel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 12px 16px;
+}
+
+.crud-cancel:hover {
+    color: var(--primary);
+}
+
+.crud-placeholder-text {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.crud-info-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 20px 28px;
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+}
+
+.crud-info-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.crud-info-item strong {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+}
+
+/* ── Account summary table (bottom of transactions page) ── */
+
+.account-summary-card {
+    margin-top: 32px;
+}
+
+.summary-table td {
+    font-size: 0.925rem;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: var(--text-muted);
+    width: 45%;
+}
+
+.summary-highlight {
+    background: #f0fdf4;
+}
+
+.summary-highlight .summary-label {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.amount-spend {
+    font-weight: 700;
+    color: #dc2626;
+    font-variant-numeric: tabular-nums;
+}
+
+.amount-left {
+    font-weight: 800;
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.amount-left.positive {
+    color: var(--success);
+}
+
+.amount-left.negative {
+    color: var(--danger);
+}
+
 @media (max-width: 600px) {
     .nav-actions {
         flex-direction: column;
@@ -927,5 +1254,19 @@ body.app-page {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
+    }
+
+    .crud-card-create {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .crud-field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-cell {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

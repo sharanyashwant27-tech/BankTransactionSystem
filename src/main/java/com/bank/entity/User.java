@@ -19,6 +19,8 @@ public class User {
 
     private String email;
 
+    private Double openingBalance;
+
     public Long getId() {
         return id;
     }
@@ -49,5 +51,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Double getOpeningBalance() {
+        return openingBalance;
+    }
+
+    public void setOpeningBalance(Double openingBalance) {
+        this.openingBalance = openingBalance;
     }
 }

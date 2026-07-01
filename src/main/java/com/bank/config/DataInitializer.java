@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        seedUser(ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL, List.of(
+        seedUser(ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL, 15000.00, List.of(
                 tx("Salary deposit", 5000.00, "2026-07-01"),
                 tx("Grocery shopping", 125.50, "2026-07-02"),
                 tx("Electricity bill", 89.99, "2026-06-28"),
@@ -51,35 +51,35 @@ public class DataInitializer implements CommandLineRunner {
                 tx("Hotel booking", 310.00, "2026-05-28")
         ));
 
-        seedUser("admin1", DEFAULT_PASSWORD, "admin1@bank.com", List.of(
+        seedUser("admin1", DEFAULT_PASSWORD, "admin1@bank.com", 8000.00, List.of(
                 tx("Freelance payment", 1200.00, "2026-07-03"),
                 tx("Book purchase", 35.99, "2026-07-01"),
                 tx("Fuel refill", 60.00, "2026-06-27"),
                 tx("Mobile recharge", 25.00, "2026-06-22")
         ));
 
-        seedUser("admin2", DEFAULT_PASSWORD, "admin2@bank.com", List.of(
+        seedUser("admin2", DEFAULT_PASSWORD, "admin2@bank.com", 6000.00, List.of(
                 tx("Bonus credit", 800.00, "2026-07-02"),
                 tx("Medical bill", 150.00, "2026-06-30"),
                 tx("Coffee shop", 12.50, "2026-06-26"),
                 tx("Bus pass", 45.00, "2026-06-18")
         ));
 
-        seedUser("admin3", DEFAULT_PASSWORD, "admin3@bank.com", List.of(
+        seedUser("admin3", DEFAULT_PASSWORD, "admin3@bank.com", 7000.00, List.of(
                 tx("Rent payment", 950.00, "2026-07-01"),
                 tx("Internet bill", 55.00, "2026-06-29"),
                 tx("Gym membership", 40.00, "2026-06-24"),
                 tx("Pharmacy", 28.75, "2026-06-19")
         ));
 
-        seedUser("admin4", DEFAULT_PASSWORD, "admin4@bank.com", List.of(
+        seedUser("admin4", DEFAULT_PASSWORD, "admin4@bank.com", 12000.00, List.of(
                 tx("Client invoice", 2100.00, "2026-07-04"),
                 tx("Office supplies", 78.25, "2026-06-28"),
                 tx("Parking fee", 15.00, "2026-06-23"),
                 tx("Team lunch", 92.00, "2026-06-17")
         ));
 
-        seedUser("admin5", DEFAULT_PASSWORD, "admin5@bank.com", List.of(
+        seedUser("admin5", DEFAULT_PASSWORD, "admin5@bank.com", 9000.00, List.of(
                 tx("Stock dividend", 640.00, "2026-07-02"),
                 tx("Home repair", 220.00, "2026-06-27"),
                 tx("Streaming subscription", 14.99, "2026-06-21"),
@@ -87,12 +87,13 @@ public class DataInitializer implements CommandLineRunner {
         ));
     }
 
-    private void seedUser(String username, String password, String email, List<TransactionSeed> seeds) {
+    private void seedUser(String username, String password, String email, double openingBalance, List<TransactionSeed> seeds) {
         User user = userRepository.findByUsername(username)
                 .orElseGet(() -> userService.register(username, password, email));
 
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        user.setOpeningBalance(openingBalance);
         userRepository.save(user);
 
         seedTransactions(user, seeds);

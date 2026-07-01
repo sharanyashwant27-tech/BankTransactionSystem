@@ -16,10 +16,13 @@
     <div class="page-header">
         <div>
             <h2>Transaction History</h2>
-            <p class="user-info">Your personal account activity</p>
+            <p class="user-info">Manage your personal transactions — available for admin, admin1, admin2, admin3, admin4, and admin5.</p>
         </div>
         <a href="/home" class="btn-back">&#8592; Back to Home</a>
     </div>
+
+    <p th:if="${successMessage}" class="flash-msg flash-success" th:text="${successMessage}">Success</p>
+    <p th:if="${errorMessage}" class="flash-msg flash-error" th:text="${errorMessage}">Error</p>
 
     <div class="table-card">
         <div class="table-card-header" th:if="${!transactions.isEmpty()}">
@@ -35,14 +38,23 @@
                     <th>Description</th>
                     <th>Amount</th>
                     <th>Date</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="t, stat : ${transactions}">
+                <tr th:each="t, stat : ${transactions}" th:classappend="${editId != null and editId == t.id} ? ' row-editing'">
                     <td class="row-num" th:text="${stat.count}">1</td>
                     <td th:text="${t.description}">Description</td>
                     <td class="amount" th:text="'$' + ${#numbers.formatDecimal(t.amount, 1, 2)}">$0.00</td>
                     <td class="date-cell" th:text="${t.transactionDate}">2026-01-01</td>
+                    <td class="actions-cell">
+                        <a th:href="@{/transactions(editId=${t.id})}" class="crud-btn crud-btn-edit">Edit</a>
+                        <form th:action="@{/transactions/{id}/delete(id=${t.id})}" method="post" class="crud-inline-form"
+                              onsubmit="return confirm('Delete this transaction?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <button type="submit" class="crud-btn crud-btn-delete">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -51,8 +63,131 @@
         <div th:if="${transactions.isEmpty()}">
             <p class="empty-msg">
                 <span class="empty-icon">&#128196;</span><br>
-                No transactions found for your account.
+                No transactions found for your account. Use the form below to add one.
             </p>
+        </div>
+    </div>
+
+    <section class="crud-panel">
+        <div class="crud-panel-header">
+            <h3>Manage Transactions</h3>
+            <p>Create, update, or delete records for <strong th:text="${username}">user</strong></p>
+        </div>
+
+        <div class="crud-grid">
+            <div class="crud-card crud-card-create">
+                <div class="crud-card-title">
+                    <span class="crud-badge crud-badge-create">CREATE</span>
+                    <h4>Add New Transaction</h4>
+                </div>
+                <form th:action="@{/transactions/create}" th:object="${createForm}" method="post" class="crud-form">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="crud-field">
+                        <label for="createDescription">Description</label>
+                        <input id="createDescription" type="text" th:field="*{description}" placeholder="e.g. Grocery shopping" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+                    </div>
+                    <div class="crud-field-row">
+                        <div class="crud-field">
+                            <label for="createAmount">Amount ($)</label>
+                            <input id="createAmount" type="number" step="0.01" min="0.01" th:field="*{amount}" placeholder="0.00" required>
+                            <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                        </div>
+                        <div class="crud-field">
+                            <label for="createDate">Date</label>
+                            <input id="createDate" type="date" th:field="*{transactionDate}" required>
+                            <span class="field-error" th:if="${#fields.hasErrors('transactionDate')}" th:errors="*{transactionDate}"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="crud-submit crud-submit-create">+ Add Transaction</button>
+                </form>
+            </div>
+
+            <div class="crud-card crud-card-update" th:if="${editForm != null}">
+                <div class="crud-card-title">
+                    <span class="crud-badge crud-badge-update">UPDATE</span>
+                    <h4>Edit Transaction #<span th:text="${editId}">1</span></h4>
+                </div>
+                <form th:action="@{/transactions/{id}/update(id=${editId})}" th:object="${editForm}" method="post" class="crud-form">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="crud-field">
+                        <label for="editDescription">Description</label>
+                        <input id="editDescription" type="text" th:field="*{description}" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+                    </div>
+                    <div class="crud-field-row">
+                        <div class="crud-field">
+                            <label for="editAmount">Amount ($)</label>
+                            <input id="editAmount" type="number" step="0.01" min="0.01" th:field="*{amount}" required>
+                            <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                        </div>
+                        <div class="crud-field">
+                            <label for="editDate">Date</label>
+                            <input id="editDate" type="date" th:field="*{transactionDate}" required>
+                            <span class="field-error" th:if="${#fields.hasErrors('transactionDate')}" th:errors="*{transactionDate}"></span>
+                        </div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="submit" class="crud-submit crud-submit-update">Save Changes</button>
+                        <a th:href="@{/transactions}" class="crud-cancel">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="crud-card crud-card-update crud-card-placeholder" th:if="${editForm == null}">
+                <div class="crud-card-title">
+                    <span class="crud-badge crud-badge-update">UPDATE</span>
+                    <h4>Edit a Transaction</h4>
+                </div>
+                <p class="crud-placeholder-text">Click <strong>Edit</strong> on any row above to update that transaction here.</p>
+            </div>
+        </div>
+
+        <div class="crud-info-bar">
+            <span class="crud-info-item"><strong>READ</strong> — View all transactions in the table above</span>
+            <span class="crud-info-item"><strong>CREATE</strong> — Add a new transaction with the left form</span>
+            <span class="crud-info-item"><strong>UPDATE</strong> — Click Edit, then save changes in the right panel</span>
+            <span class="crud-info-item"><strong>DELETE</strong> — Click Delete on any row to remove it</span>
+        </div>
+    </section>
+
+    <div class="table-card account-summary-card">
+        <div class="table-card-header">
+            <h3>Banking Account Summary</h3>
+            <p>Financial overview for <strong th:text="${accountSummary.username}">user</strong></p>
+        </div>
+        <div class="table-scroll">
+            <table class="txn-table summary-table">
+                <thead>
+                <tr>
+                    <th>Detail</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="summary-label">Account Holder</td>
+                    <td th:text="${accountSummary.username}">admin</td>
+                </tr>
+                <tr>
+                    <td class="summary-label">Opening Balance</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(accountSummary.openingBalance, 1, 2)}">$0.00</td>
+                </tr>
+                <tr>
+                    <td class="summary-label">Total Spending</td>
+                    <td class="amount-spend" th:text="'$' + ${#numbers.formatDecimal(accountSummary.totalSpending, 1, 2)}">$0.00</td>
+                </tr>
+                <tr class="summary-highlight">
+                    <td class="summary-label">Left Amount</td>
+                    <td class="amount-left" th:classappend="${accountSummary.leftAmount >= 0} ? ' positive' : ' negative'"
+                        th:text="'$' + ${#numbers.formatDecimal(accountSummary.leftAmount, 1, 2)}">$0.00</td>
+                </tr>
+                <tr>
+                    <td class="summary-label">Total Transactions</td>
+                    <td th:text="${accountSummary.transactionCount}">0</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
