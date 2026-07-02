@@ -37,13 +37,13 @@ public class DashboardController {
         User user = userService.findByUsername(userDetails.getUsername());
         List<Transaction> transactions = transactionRepository.findByUserOrderByTransactionDateDesc(user);
 
-        double total = transactions.stream().mapToDouble(Transaction::getAmount).sum();
+        double total = sumAmounts(transactions);
         double average = transactions.isEmpty() ? 0 : total / transactions.size();
-        double highest = transactions.stream().mapToDouble(Transaction::getAmount).max().orElse(0);
-        double lowest = transactions.stream().mapToDouble(Transaction::getAmount).min().orElse(0);
+        double highest = maxAmount(transactions);
+        double lowest = minAmount(transactions);
 
         List<Transaction> topSpending = transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getAmount).reversed())
+                .sorted(Comparator.comparing(DashboardController::amountOrZero).reversed())
                 .limit(5)
                 .toList();
 
@@ -58,5 +58,32 @@ public class DashboardController {
         model.addAttribute("maxAmount", highest > 0 ? highest : 1);
 
         return "spending";
+    }
+
+    private static double sumAmounts(List<Transaction> transactions) {
+        double total = 0;
+        for (Transaction transaction : transactions) {
+            total += amountOrZero(transaction);
+        }
+        return total;
+    }
+
+    private static double maxAmount(List<Transaction> transactions) {
+        return transactions.stream()
+                .mapToDouble(DashboardController::amountOrZero)
+                .max()
+                .orElse(0);
+    }
+
+    private static double minAmount(List<Transaction> transactions) {
+        return transactions.stream()
+                .mapToDouble(DashboardController::amountOrZero)
+                .min()
+                .orElse(0);
+    }
+
+    private static double amountOrZero(Transaction transaction) {
+        Double amount = transaction.getAmount();
+        return amount != null ? amount : 0.0;
     }
 }

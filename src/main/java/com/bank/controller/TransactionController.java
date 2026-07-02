@@ -3,7 +3,6 @@ package com.bank.controller;
 import com.bank.dto.TransactionForm;
 import com.bank.entity.Transaction;
 import com.bank.service.TransactionService;
-import com.bank.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,11 +22,9 @@ import java.time.LocalDate;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    private final UserService userService;
 
-    public TransactionController(TransactionService transactionService, UserService userService) {
+    public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.userService = userService;
     }
 
     @GetMapping("/transactions")
