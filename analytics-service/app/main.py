@@ -40,11 +40,8 @@ def monthly_report(
 
 
 @app.get("/analytics/spending-analysis")
-def spending_analysis(
-    user_id: int | None = Query(default=None),
-    db: Session = Depends(get_db),
-):
-    return analytics_service.spending_analysis(db, user_id)
+def spending_analysis(db: Session = Depends(get_db)):
+    return analytics_service.spending_analysis(db)
 
 
 @app.get("/analytics/charts/monthly-spending")

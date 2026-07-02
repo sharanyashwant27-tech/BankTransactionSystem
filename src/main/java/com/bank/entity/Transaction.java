@@ -1,5 +1,6 @@
 package com.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -23,6 +24,7 @@ public class Transaction {
     private LocalDate transactionDate;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     public Long getId() {

@@ -1,0 +1,52 @@
+package com.bank.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.util.Set;
+
+@Component
+public class SensitiveQueryParamFilter extends OncePerRequestFilter {
+
+    private static final Set<String> BLOCKED_PARAMS = Set.of(
+            "username", "password", "passwd", "pwd", "userid", "user_id"
+    );
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        if (containsBlockedParam(request)) {
+            String cleanUrl = buildCleanUrl(request);
+            response.sendRedirect(cleanUrl);
+            return;
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean containsBlockedParam(HttpServletRequest request) {
+        for (String paramName : request.getParameterMap().keySet()) {
+            if (BLOCKED_PARAMS.contains(paramName.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String buildCleanUrl(HttpServletRequest request) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(request.getRequestURI());
+        request.getParameterMap().forEach((name, values) -> {
+            if (!BLOCKED_PARAMS.contains(name.toLowerCase())) {
+                for (String value : values) {
+                    builder.queryParam(name, value);
+                }
+            }
+        });
+        return builder.build().toUriString();
+    }
+}

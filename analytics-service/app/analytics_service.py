@@ -23,7 +23,6 @@ def _transactions_dataframe(db: Session) -> pd.DataFrame:
     records = [
         {
             "id": tx.id,
-            "user_id": tx.user_id,
             "username": username,
             "description": tx.description,
             "amount": float(tx.amount) if tx.amount is not None else 0.0,
@@ -59,8 +58,6 @@ def monthly_transaction_report(db: Session, year: int, month: int) -> dict[str, 
     transactions = [
         {
             "id": int(row["id"]),
-            "user_id": int(row["user_id"]) if pd.notna(row["user_id"]) else None,
-            "username": row["username"],
             "description": row["description"],
             "amount": round(float(row["amount"]), 2),
             "transaction_date": row["transaction_date"].strftime("%Y-%m-%d"),
@@ -79,7 +76,7 @@ def monthly_transaction_report(db: Session, year: int, month: int) -> dict[str, 
     }
 
 
-def spending_analysis(db: Session, user_id: int | None = None) -> dict[str, Any]:
+def spending_analysis(db: Session) -> dict[str, Any]:
     df = _transactions_dataframe(db)
     if df.empty:
         return {
@@ -92,11 +89,8 @@ def spending_analysis(db: Session, user_id: int | None = None) -> dict[str, Any]
             "top_descriptions": [],
         }
 
-    if user_id is not None:
-        df = df[df["user_id"] == user_id]
-
     by_user = (
-        df.groupby(["user_id", "username"], dropna=False)["amount"]
+        df.groupby("username", dropna=False)["amount"]
         .agg(["count", "sum", "mean"])
         .reset_index()
         .sort_values("sum", ascending=False)
@@ -111,7 +105,6 @@ def spending_analysis(db: Session, user_id: int | None = None) -> dict[str, Any]
     )
 
     return {
-        "user_id": user_id,
         "total_spending": round(float(df["amount"].sum()), 2),
         "transaction_count": int(len(df)),
         "average_transaction": round(float(df["amount"].mean()), 2),
@@ -119,7 +112,6 @@ def spending_analysis(db: Session, user_id: int | None = None) -> dict[str, Any]
         "lowest_transaction": round(float(df["amount"].min()), 2),
         "by_user": [
             {
-                "user_id": int(row["user_id"]) if pd.notna(row["user_id"]) else None,
                 "username": row["username"],
                 "transaction_count": int(row["count"]),
                 "total_spending": round(float(row["sum"]), 2),
@@ -209,10 +201,10 @@ def spending_by_user_chart(db: Session) -> BytesIO:
 def export_monthly_csv(db: Session, year: int, month: int) -> str:
     df = _transactions_dataframe(db)
     if df.empty:
-        return "id,user_id,username,description,amount,transaction_date\n"
+        return "id,description,amount,transaction_date\n"
 
     monthly = df[(df["year"] == year) & (df["month"] == month)]
-    export_df = monthly[["id", "user_id", "username", "description", "amount", "transaction_date"]].copy()
+    export_df = monthly[["id", "description", "amount", "transaction_date"]].copy()
     export_df["transaction_date"] = export_df["transaction_date"].dt.strftime("%Y-%m-%d")
 
     output = StringIO()

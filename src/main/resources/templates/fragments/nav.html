@@ -29,5 +29,27 @@
     </div>
 </nav>
 
+<script th:fragment="sessionTimeout">
+    (function () {
+        var timeoutMs = 120000;
+        var timer;
+
+        function redirectToSessionExpired() {
+            window.location.href = '/session-expired';
+        }
+
+        function resetTimer() {
+            clearTimeout(timer);
+            timer = setTimeout(redirectToSessionExpired, timeoutMs);
+        }
+
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function (eventName) {
+            document.addEventListener(eventName, resetTimer, { passive: true });
+        });
+
+        resetTimer();
+    })();
+</script>
+
 </body>
 </html>

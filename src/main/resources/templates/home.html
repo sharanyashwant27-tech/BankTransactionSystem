@@ -1,57 +1,59 @@
-<html xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Bank Transaction System</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body class="app-page home-page">
-
-<div th:replace="~{fragments/nav :: navbar('home')}"></div>
-
-<div class="page-container home-page">
-
-    <div class="hero-card">
-        <h1>Transaction Dashboard</h1>
-        <p class="user-info">Welcome back, <strong th:text="${username}">user</strong>. Choose a feature below to manage your account.</p>
-
-        <div class="action-cards">
-            <a href="/transactions" class="action-card-link">
-                <div class="action-card">
-                    <div class="action-card-icon">&#128202;</div>
-                    <h3>View History</h3>
-                    <p>Browse all your past transactions in one place.</p>
-                    <span class="action-card-cta">Open History &#8594;</span>
-                </div>
-            </a>
-            <a href="/security" class="action-card-link">
-                <div class="action-card">
-                    <div class="action-card-icon">&#128274;</div>
-                    <h3>Secure Access</h3>
-                    <p>Review your account security and authentication details.</p>
-                    <span class="action-card-cta">View Security &#8594;</span>
-                </div>
-            </a>
-            <a href="/spending" class="action-card-link">
-                <div class="action-card">
-                    <div class="action-card-icon">&#128200;</div>
-                    <h3>Track Spending</h3>
-                    <p>See totals, averages, and your top spending categories.</p>
-                    <span class="action-card-cta">Track Now &#8594;</span>
-                </div>
-            </a>
-        </div>
-
-        <div class="home-actions">
-            <a href="/transactions" class="btn-primary">View Transactions &#8594;</a>
-        </div>
-    </div>
-
-</div>
-
-</body>
-
-</html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Bank Transaction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="app-page home-page">
+
+<div th:replace="~{fragments/nav :: navbar('home')}"></div>
+
+<div class="page-container home-page">
+
+    <div class="hero-card">
+        <h1>Transaction Dashboard</h1>
+        <p class="user-info">Welcome back, <strong th:text="${username}">user</strong>. Choose a feature below to manage your account.</p>
+
+        <div class="action-cards">
+            <a href="/transactions" class="action-card-link">
+                <div class="action-card">
+                    <div class="action-card-icon">&#128202;</div>
+                    <h3>View History</h3>
+                    <p>Browse all your past transactions in one place.</p>
+                    <span class="action-card-cta">Open History &#8594;</span>
+                </div>
+            </a>
+            <a href="/security" class="action-card-link">
+                <div class="action-card">
+                    <div class="action-card-icon">&#128274;</div>
+                    <h3>Secure Access</h3>
+                    <p>Review your account security and authentication details.</p>
+                    <span class="action-card-cta">View Security &#8594;</span>
+                </div>
+            </a>
+            <a href="/spending" class="action-card-link">
+                <div class="action-card">
+                    <div class="action-card-icon">&#128200;</div>
+                    <h3>Track Spending</h3>
+                    <p>See totals, averages, and your top spending categories.</p>
+                    <span class="action-card-cta">Track Now &#8594;</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="home-actions">
+            <a href="/transactions" class="btn-primary">View Transactions &#8594;</a>
+        </div>
+    </div>
+
+</div>
+
+<script th:replace="~{fragments/nav :: sessionTimeout}"></script>
+
+</body>
+
+</html>
 
