@@ -21,7 +21,7 @@ public class SensitiveQueryParamFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (containsBlockedParam(request)) {
+        if ("GET".equalsIgnoreCase(request.getMethod()) && containsBlockedQueryParam(request)) {
             String cleanUrl = buildCleanUrl(request);
             response.sendRedirect(cleanUrl);
             return;
@@ -29,7 +29,11 @@ public class SensitiveQueryParamFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean containsBlockedParam(HttpServletRequest request) {
+    private boolean containsBlockedQueryParam(HttpServletRequest request) {
+        if (request.getQueryString() == null || request.getQueryString().isBlank()) {
+            return false;
+        }
+
         for (String paramName : request.getParameterMap().keySet()) {
             if (BLOCKED_PARAMS.contains(paramName.toLowerCase())) {
                 return true;
