@@ -23,5 +23,6 @@ class Transaction(Base):
     description: Mapped[str | None] = mapped_column(String(100))
     amount: Mapped[float | None] = mapped_column(Numeric(10, 2))
     transaction_date: Mapped[object | None] = mapped_column(Date)
+    type: Mapped[str | None] = mapped_column(String(20))
 
     user: Mapped[User | None] = relationship(back_populates="transactions")

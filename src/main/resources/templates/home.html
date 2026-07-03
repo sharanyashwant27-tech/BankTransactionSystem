@@ -11,31 +11,37 @@
 
 <div th:replace="~{fragments/nav :: navbar('home')}"></div>
 
-<div class="page-container home-page">
+<div class="page-container">
 
-    <div class="hero-card">
-        <h1>Transaction Dashboard</h1>
-        <p class="user-info">Welcome back, <strong th:text="${username}">user</strong>. Choose a feature below to manage your account.</p>
+    <section class="hero-card home-hero">
+        <div class="home-hero-top">
+            <span class="page-kicker">Dashboard</span>
+            <span class="home-welcome-chip">
+                Signed in as <strong th:text="${username}">user</strong>
+            </span>
+        </div>
+        <h1>Your banking command center</h1>
+        <p class="user-info">Welcome back. Review history, move money, and monitor spending from one polished workspace.</p>
 
         <div class="action-cards">
-            <a href="/transactions" class="action-card-link">
-                <div class="action-card">
+            <a href="/transactions?tab=history" class="action-card-link">
+                <div class="action-card action-card-history">
                     <div class="action-card-icon">&#128202;</div>
                     <h3>View History</h3>
-                    <p>Browse all your past transactions in one place.</p>
+                    <p>Browse all your past transactions and manage records in one place.</p>
                     <span class="action-card-cta">Open History &#8594;</span>
                 </div>
             </a>
             <a href="/security" class="action-card-link">
-                <div class="action-card">
+                <div class="action-card action-card-security">
                     <div class="action-card-icon">&#128274;</div>
                     <h3>Secure Access</h3>
-                    <p>Review your account security and authentication details.</p>
+                    <p>Review your account protection and authentication status.</p>
                     <span class="action-card-cta">View Security &#8594;</span>
                 </div>
             </a>
             <a href="/spending" class="action-card-link">
-                <div class="action-card">
+                <div class="action-card action-card-spending">
                     <div class="action-card-icon">&#128200;</div>
                     <h3>Track Spending</h3>
                     <p>See totals, averages, and your top spending categories.</p>
@@ -45,9 +51,28 @@
         </div>
 
         <div class="home-actions">
-            <a href="/transactions" class="btn-primary">View Transactions &#8594;</a>
+            <a href="/transactions?tab=history" class="btn btn-primary">Go to Transactions &#8594;</a>
+            <a href="/transactions?tab=transfer" class="btn btn-secondary">Make a Transfer</a>
         </div>
-    </div>
+    </section>
+
+    <section class="home-highlights">
+        <div class="highlight-card">
+            <span class="highlight-icon">&#9889;</span>
+            <h4>Instant transfers</h4>
+            <p>Move funds between users with live balance checks.</p>
+        </div>
+        <div class="highlight-card">
+            <span class="highlight-icon">&#128737;</span>
+            <h4>Session security</h4>
+            <p>Idle sessions expire automatically after two minutes.</p>
+        </div>
+        <div class="highlight-card">
+            <span class="highlight-icon">&#128200;</span>
+            <h4>Clear insights</h4>
+            <p>Track debits, credits, and remaining balance at a glance.</p>
+        </div>
+    </section>
 
 </div>
 
@@ -56,4 +81,3 @@
 </body>
 
 </html>
-

@@ -13,6 +13,9 @@ import java.time.LocalDate;
 @Table(name = "transactions")
 public class Transaction {
 
+    public static final String TYPE_DEBIT = "DEBIT";
+    public static final String TYPE_CREDIT = "CREDIT";
+
     @Id
     @GeneratedValue
     private Long id;
@@ -22,6 +25,9 @@ public class Transaction {
     private Double amount;
 
     private LocalDate transactionDate;
+
+    /** DEBIT reduces balance; CREDIT increases balance. Null treated as DEBIT. */
+    private String type;
 
     @ManyToOne
     @JsonIgnore
@@ -57,6 +63,18 @@ public class Transaction {
 
     public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isCredit() {
+        return TYPE_CREDIT.equalsIgnoreCase(type);
     }
 
     public User getUser() {

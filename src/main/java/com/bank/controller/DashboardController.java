@@ -35,7 +35,10 @@ public class DashboardController {
     @GetMapping("/spending")
     public String spending(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByUsername(userDetails.getUsername());
-        List<Transaction> transactions = transactionRepository.findByUserOrderByTransactionDateDesc(user);
+        List<Transaction> allTransactions = transactionRepository.findByUserOrderByTransactionDateDesc(user);
+        List<Transaction> transactions = allTransactions.stream()
+                .filter(t -> !t.isCredit())
+                .toList();
 
         double total = sumAmounts(transactions);
         double average = transactions.isEmpty() ? 0 : total / transactions.size();

@@ -13,12 +13,13 @@
 
 <div class="page-container">
 
-    <div class="page-header">
-        <div>
+    <div class="page-banner page-banner-spending">
+        <div class="page-banner-copy">
+            <span class="page-kicker">Insights</span>
             <h2>Track Spending</h2>
-            <p class="user-info">Overview of your transaction amounts and trends</p>
+            <p class="user-info">Overview of your debit amounts, averages, and top expenses.</p>
         </div>
-        <a href="/home" class="btn-back">&#8592; Back to Home</a>
+        <a href="/home" class="btn btn-secondary btn-back">&#8592; Back to Home</a>
     </div>
 
     <div class="stats-grid" th:if="${transactionCount > 0}">
@@ -44,9 +45,13 @@
         </div>
     </div>
 
-    <div class="content-card" th:if="${!topSpending.isEmpty()}">
-        <h3>Top Spending</h3>
-        <p class="card-subtitle">Your largest transactions by amount</p>
+    <div class="content-card spending-card" th:if="${!topSpending.isEmpty()}">
+        <div class="content-card-head">
+            <div>
+                <h3>Top Spending</h3>
+                <p class="card-subtitle">Your largest debit transactions by amount</p>
+            </div>
+        </div>
         <div class="spending-bars">
             <div class="spending-bar-row" th:each="t : ${topSpending}">
                 <div class="spending-bar-label">
@@ -59,13 +64,13 @@
                 </div>
             </div>
         </div>
-        <a href="/transactions" class="btn-inline">View Full History &#8594;</a>
+        <a href="/transactions?tab=history" class="btn btn-secondary btn-inline">View Full History &#8594;</a>
     </div>
 
-    <div class="content-card" th:if="${transactions.isEmpty()}">
+    <div class="content-card empty-state-card" th:if="${transactions.isEmpty()}">
         <p class="empty-msg">
             <span class="empty-icon">&#128200;</span><br>
-            No spending data yet. Transactions will appear here once recorded.
+            No spending data yet. Debit transactions will appear here once recorded.
         </p>
     </div>
 

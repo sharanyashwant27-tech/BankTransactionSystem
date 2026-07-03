@@ -27,6 +27,7 @@ def _transactions_dataframe(db: Session) -> pd.DataFrame:
             "description": tx.description,
             "amount": float(tx.amount) if tx.amount is not None else 0.0,
             "transaction_date": tx.transaction_date,
+            "type": (tx.type or "DEBIT").upper(),
         }
         for tx, username in rows
     ]
@@ -40,6 +41,12 @@ def _transactions_dataframe(db: Session) -> pd.DataFrame:
     df["month"] = df["transaction_date"].dt.month
     df["month_name"] = df["transaction_date"].dt.strftime("%B")
     return df
+
+
+def _debit_only(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return df
+    return df[df["type"] != "CREDIT"]
 
 
 def monthly_transaction_report(db: Session, year: int, month: int) -> dict[str, Any]:
@@ -77,7 +84,7 @@ def monthly_transaction_report(db: Session, year: int, month: int) -> dict[str, 
 
 
 def spending_analysis(db: Session) -> dict[str, Any]:
-    df = _transactions_dataframe(db)
+    df = _debit_only(_transactions_dataframe(db))
     if df.empty:
         return {
             "total_spending": 0.0,
@@ -131,7 +138,7 @@ def spending_analysis(db: Session) -> dict[str, Any]:
 
 
 def monthly_spending_chart(db: Session, year: int) -> BytesIO:
-    df = _transactions_dataframe(db)
+    df = _debit_only(_transactions_dataframe(db))
     buffer = BytesIO()
 
     if df.empty:
@@ -166,7 +173,7 @@ def monthly_spending_chart(db: Session, year: int) -> BytesIO:
 
 
 def spending_by_user_chart(db: Session) -> BytesIO:
-    df = _transactions_dataframe(db)
+    df = _debit_only(_transactions_dataframe(db))
     buffer = BytesIO()
 
     if df.empty:
