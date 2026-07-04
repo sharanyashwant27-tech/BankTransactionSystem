@@ -1,0 +1,169 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Bank Transaction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="app-page admin-page">
+
+<div th:replace="~{fragments/nav :: navbar('admin')}"></div>
+
+<div class="page-container">
+
+    <div class="page-banner page-banner-admin">
+        <div class="page-banner-copy">
+            <span class="page-kicker">Administrative</span>
+            <h2>Employee Compensation</h2>
+            <p class="user-info">Credit salary on a chosen date and issue performance incentives to any account, including your own.</p>
+        </div>
+    </div>
+
+    <p th:if="${successMessage}" class="flash-msg flash-success" th:text="${successMessage}">Success</p>
+    <p th:if="${errorMessage}" class="flash-msg flash-error" th:text="${errorMessage}">Error</p>
+
+    <div class="admin-grid">
+        <section class="admin-card admin-card-salary">
+            <div class="admin-card-header">
+                <span class="admin-badge admin-badge-salary">Salary</span>
+                <h3>Credit Salary</h3>
+                <p>Post a salary credit to any user account on the date you choose.</p>
+            </div>
+
+            <form th:action="@{/admin/salary}" th:object="${salaryForm}" method="post" class="admin-form admin-card-body">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                <div class="admin-field">
+                    <label for="salaryEmployee">Recipient</label>
+                    <select id="salaryEmployee" th:field="*{recipientUsername}" required>
+                        <option value="">Select user</option>
+                        <option th:each="recipient : ${recipients}"
+                                th:value="${recipient.username}"
+                                th:text="${recipient.username + ' (' + (recipient.admin ? 'Administrator' : 'Employee') + ')'}">admin</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('recipientUsername')}" th:errors="*{recipientUsername}"></span>
+                </div>
+
+                <div class="admin-field-row">
+                    <div class="admin-field">
+                        <label for="salaryAmount">Salary Amount ($)</label>
+                        <input id="salaryAmount" type="number" step="0.01" min="0.01"
+                               th:field="*{amount}" placeholder="5000.00" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                    </div>
+                    <div class="admin-field">
+                        <label for="salaryDate">Credit Date</label>
+                        <input id="salaryDate" type="date" th:field="*{creditDate}" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('creditDate')}" th:errors="*{creditDate}"></span>
+                    </div>
+                </div>
+
+                <div class="admin-field">
+                    <label for="salaryNote">Pay Period / Note <span class="admin-optional">(optional)</span></label>
+                    <input id="salaryNote" type="text" th:field="*{note}" placeholder="e.g. July 2026 payroll">
+                </div>
+
+                <button type="submit" class="btn btn-primary admin-submit">Credit Salary</button>
+            </form>
+        </section>
+
+        <section class="admin-card admin-card-incentive">
+            <div class="admin-card-header">
+                <span class="admin-badge admin-badge-incentive">Incentive</span>
+                <h3>Performance Incentive</h3>
+                <p>Reward users based on performance rating. Suggested amounts update when you change the rating.</p>
+            </div>
+
+            <form th:action="@{/admin/incentive}" th:object="${incentiveForm}" method="post" class="admin-form admin-card-body"
+                  id="incentiveForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                <div class="admin-field">
+                    <label for="incentiveEmployee">Recipient</label>
+                    <select id="incentiveEmployee" th:field="*{recipientUsername}" required>
+                        <option value="">Select user</option>
+                        <option th:each="recipient : ${recipients}"
+                                th:value="${recipient.username}"
+                                th:text="${recipient.username + ' (' + (recipient.admin ? 'Administrator' : 'Employee') + ')'}">admin</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('recipientUsername')}" th:errors="*{recipientUsername}"></span>
+                </div>
+
+                <div class="admin-field">
+                    <label for="performanceLevel">Performance Rating</label>
+                    <select id="performanceLevel" th:field="*{performanceLevel}" required>
+                        <option value="OUTSTANDING"
+                                th:attr="data-suggested=${incentiveAmounts['OUTSTANDING']}">Outstanding</option>
+                        <option value="EXCELLENT"
+                                th:attr="data-suggested=${incentiveAmounts['EXCELLENT']}">Excellent</option>
+                        <option value="GOOD"
+                                th:attr="data-suggested=${incentiveAmounts['GOOD']}">Good</option>
+                        <option value="SATISFACTORY"
+                                th:attr="data-suggested=${incentiveAmounts['SATISFACTORY']}">Satisfactory</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('performanceLevel')}" th:errors="*{performanceLevel}"></span>
+                </div>
+
+                <div class="admin-field-row">
+                    <div class="admin-field">
+                        <label for="incentiveAmount">Incentive Amount ($)</label>
+                        <input id="incentiveAmount" type="number" step="0.01" min="0.01"
+                               th:field="*{amount}" placeholder="500.00" required>
+                        <span class="admin-hint">Suggested amount is filled from the rating; you can adjust it.</span>
+                        <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                    </div>
+                    <div class="admin-field">
+                        <label for="incentiveDate">Credit Date</label>
+                        <input id="incentiveDate" type="date" th:field="*{creditDate}" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('creditDate')}" th:errors="*{creditDate}"></span>
+                    </div>
+                </div>
+
+                <div class="admin-field">
+                    <label for="incentiveNote">Performance Notes <span class="admin-optional">(optional)</span></label>
+                    <input id="incentiveNote" type="text" th:field="*{note}" placeholder="e.g. Exceeded quarterly targets">
+                </div>
+
+                <button type="submit" class="btn btn-primary admin-submit">Credit Incentive</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="admin-info-panel">
+        <h4>How it works</h4>
+        <ul class="admin-info-list">
+            <li><strong>Salary credits</strong> appear instantly on the recipient account as a credit transaction.</li>
+            <li><strong>Performance incentives</strong> use rating tiers: Outstanding ($1,500), Excellent ($1,000), Good ($500), Satisfactory ($250).</li>
+            <li>You can credit salary and incentives to employees or to your own administrator account.</li>
+            <li>Recipients can view credits in Transaction History but cannot delete administrative credits.</li>
+        </ul>
+    </section>
+
+</div>
+
+<script th:replace="~{fragments/nav :: sessionTimeout}"></script>
+<script>
+    (function () {
+        var levelSelect = document.getElementById('performanceLevel');
+        var amountInput = document.getElementById('incentiveAmount');
+        if (!levelSelect || !amountInput) {
+            return;
+        }
+
+        function applySuggestedAmount() {
+            var selected = levelSelect.options[levelSelect.selectedIndex];
+            var suggested = selected.getAttribute('data-suggested');
+            if (suggested) {
+                amountInput.value = Number(suggested).toFixed(2);
+            }
+        }
+
+        levelSelect.addEventListener('change', applySuggestedAmount);
+    })();
+</script>
+
+</body>
+
+</html>

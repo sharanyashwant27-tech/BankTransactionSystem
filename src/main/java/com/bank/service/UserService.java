@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -25,10 +27,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        String role = resolveRole(user);
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(role)
                 .build();
     }
 
@@ -36,6 +40,16 @@ public class UserService implements UserDetailsService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAdmin(String username) {
+        return findByUsername(username).isAdmin();
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getEmployeeUsers() {
+        return userRepository.findByRoleOrderByUsernameAsc(User.ROLE_USER);
     }
 
     @Transactional
@@ -48,7 +62,31 @@ public class UserService implements UserDetailsService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
+        user.setRole(User.ROLE_USER);
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User registerAdmin(String username, String password, String email) {
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEmail(email);
+        user.setRole(User.ROLE_ADMIN);
+
+        return userRepository.save(user);
+    }
+
+    private String resolveRole(User user) {
+        String role = user.getRole();
+        if (role == null || role.isBlank()) {
+            return User.ROLE_USER.toLowerCase();
+        }
+        return role.toLowerCase();
     }
 }

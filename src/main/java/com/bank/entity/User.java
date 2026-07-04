@@ -10,6 +10,9 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class User {
 
+    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_USER = "USER";
+
     @Id
     @GeneratedValue
     @JsonIgnore
@@ -23,6 +26,8 @@ public class User {
     private String email;
 
     private Double openingBalance;
+
+    private String role;
 
     public Long getId() {
         return id;
@@ -62,5 +67,17 @@ public class User {
 
     public void setOpeningBalance(Double openingBalance) {
         this.openingBalance = openingBalance;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isAdmin() {
+        return ROLE_ADMIN.equalsIgnoreCase(role);
     }
 }

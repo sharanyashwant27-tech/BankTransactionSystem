@@ -29,6 +29,7 @@ public class DashboardController {
         User user = userService.findByUsername(userDetails.getUsername());
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("userRole", user.isAdmin() ? "Administrator" : "Employee");
         return "security";
     }
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<nav class="top-nav" th:fragment="navbar(activePage)">
+<nav class="top-nav" th:classappend="${isAdmin} ? ' top-nav-compact' : ''" th:fragment="navbar(activePage)">
     <div class="nav-inner">
         <a href="/home" class="nav-brand">
             <span class="nav-brand-icon">&#127974;</span>
@@ -19,14 +19,10 @@
                 <a href="/transactions?tab=transfer" class="nav-link" th:classappend="${activePage == 'transfer'} ? 'active' : ''">Transfer</a>
                 <a href="/security" class="nav-link" th:classappend="${activePage == 'security'} ? 'active' : ''">Security</a>
                 <a href="/spending" class="nav-link" th:classappend="${activePage == 'spending'} ? 'active' : ''">Spending</a>
+                <a th:if="${isAdmin}" href="/admin" class="nav-link" th:classappend="${activePage == 'admin'} ? 'active' : ''">Administration</a>
             </div>
 
             <div class="nav-user-menu" th:if="${username != null}">
-                <a th:if="${activePage != 'home'}"
-                   href="/home"
-                   class="btn btn-sm btn-secondary btn-back nav-back-home">
-                    &#8592; Home
-                </a>
                 <span class="nav-username">
                     <span class="nav-user-icon" th:text="${#strings.toUpperCase(#strings.substring(username,0,1))}">U</span>
                     <span th:text="${username}">user</span>

@@ -14,12 +14,7 @@
 <div class="page-container">
 
     <section class="hero-card home-hero">
-        <div class="home-hero-top">
-            <span class="page-kicker">Dashboard</span>
-            <span class="home-welcome-chip">
-                Signed in as <strong th:text="${username}">user</strong>
-            </span>
-        </div>
+        <span class="page-kicker">Dashboard</span>
         <h1>Your banking command center</h1>
         <p class="user-info">Welcome back. Review history, move money, and monitor spending from one polished workspace.</p>
 
@@ -46,6 +41,14 @@
                     <h3>Track Spending</h3>
                     <p>See totals, averages, and your top spending categories.</p>
                     <span class="action-card-cta">Track Now &#8594;</span>
+                </div>
+            </a>
+            <a th:if="${isAdmin}" href="/admin" class="action-card-link">
+                <div class="action-card action-card-admin">
+                    <div class="action-card-icon">&#128188;</div>
+                    <h3>Administration</h3>
+                    <p>Credit employee salary and issue performance incentives.</p>
+                    <span class="action-card-cta">Open Admin &#8594;</span>
                 </div>
             </a>
         </div>

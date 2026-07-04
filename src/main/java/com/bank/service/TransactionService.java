@@ -152,6 +152,9 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(String username, Long id) {
         Transaction transaction = requireOwnedTransaction(username, id);
+        if (transaction.isCredit() && AdminService.isAdminIssuedCredit(transaction.getDescription())) {
+            throw new IllegalArgumentException("Administrative credits cannot be deleted");
+        }
         transactionRepository.delete(transaction);
     }
 
