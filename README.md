@@ -1,21 +1,38 @@
 # Bank Transaction System
 
-A full-stack bank transaction management application with a Spring Boot web UI and a Python analytics enhancement layer.
+A full-stack personal banking web application with a Spring Boot UI and an optional Python analytics service. Users manage transactions, transfer funds, and review spending; administrators can credit salary and performance incentives to any account.
 
 ## Features
 
-- User authentication with Spring Security
-- Personal transaction history per logged-in user
-- MySQL database with JPA/Hibernate
-- Thymeleaf UI (login, home, transactions)
-- Python FastAPI analytics service (reports, charts, CSV export)
-- Docker Compose deployment for any machine
+### Authentication & security
+- Form-based login with BCrypt password hashing (Spring Security)
+- Role-based access: **Administrator** and **Employee**
+- 2-minute session timeout with a dedicated session-expired page
+- Sensitive credentials blocked from GET query strings (username/password never accepted in URLs)
+
+### Banking (all users)
+- **Home dashboard** — quick access to history, security, and spending
+- **Transaction History** — view debits and credits on your account
+- **Manage Transactions** — create, edit, and delete your own debit records
+- **Bank Account Summary** — opening balance, total spending, and amount left
+- **Online Transfer** — send money to another user with balance validation
+- **Secure Access** — account and session details
+- **Track Spending** — totals, averages, and top expenses
+
+### Administration (admin user only)
+- **Credit Salary** — post a salary credit to any user on a chosen date
+- **Performance Incentive** — reward users by rating tier (Outstanding, Excellent, Good, Satisfactory) with suggested amounts
+- Credits appear instantly on the recipient’s transaction history
+- Administrative credits cannot be deleted by recipients
+
+### Analytics (optional)
+- Python FastAPI service for reports, charts, and CSV export against the same MySQL database
 
 ## Tech Stack
 
 | Layer | Technologies |
 |-------|--------------|
-| Web App | Java 21, Spring Boot 3.x, Spring Security, Spring Data JPA, Thymeleaf |
+| Web App | Java 21, Spring Boot 3.x, Spring Security, Spring Data JPA, Thymeleaf, Bean Validation |
 | Analytics | Python 3.12, FastAPI, Pandas, SQLAlchemy, Matplotlib |
 | Database | MySQL 8.4 |
 | Deployment | Docker, Docker Compose |
@@ -32,11 +49,11 @@ docker compose up --build -d
 
 | Service | URL |
 |---------|-----|
-| Bank App (Login) | http://localhost:8083/login |
-| Home Dashboard | http://localhost:8083/home |
+| Login | http://localhost:8083/login |
+| Home | http://localhost:8083/home |
 | Transactions | http://localhost:8083/transactions |
-| Analytics API | http://localhost:8090/docs |
-| Analytics Report | http://localhost:8090/report |
+| Administration | http://localhost:8083/admin *(admin only)* |
+| Analytics API docs | http://localhost:8090/docs |
 
 **Stop services:**
 
@@ -47,34 +64,77 @@ docker compose down
 **View logs:**
 
 ```bash
-docker compose logs -f
+docker compose logs -f bank-app
+```
+
+**Rebuild after code changes:**
+
+```bash
+docker compose up --build -d bank-app
 ```
 
 ## Login Credentials
 
-### Primary admin account
+Docker sets seed passwords via environment variables (defaults shown below).
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `APP_SEED_ADMIN_PASSWORD` | `admin123` | Password for the primary admin account |
+| `APP_SEED_DEFAULT_PASSWORD` | `admin123` | Password for all employee demo accounts |
+| `APP_SEED_ADMIN_USERNAME` | `admin` | Primary administrator username |
+
+### Administrator
 
 | Field | Value |
 |-------|-------|
 | **Username** | `admin` |
 | **Password** | `admin123` |
 | **Email** | `admin@bank.com` |
+| **Role** | Administrator |
 
-The admin account is created automatically on startup with **10 sample transactions** (salary deposit, bills, transfers, etc.).
+Use this account to access **Administration** and credit salary or performance incentives to any user (including yourself).
 
-### Other demo users
+### Employee demo accounts
 
-All other demo users share the password **`admin123`**.
+All employee accounts use password **`admin123`**.
 
-| Username | Email |
-|----------|-------|
-| admin1 | admin1@bank.com |
-| admin2 | admin2@bank.com |
-| admin3 | admin3@bank.com |
-| admin4 | admin4@bank.com |
-| admin5 | admin5@bank.com |
+| Username | Email | Role |
+|----------|-------|------|
+| admin1 | admin1@bank.com | Employee |
+| admin2 | admin2@bank.com | Employee |
+| admin3 | admin3@bank.com | Employee |
+| admin4 | admin4@bank.com | Employee |
+| admin5 | admin5@bank.com | Employee |
 
-Users and sample transactions are seeded automatically on startup via `DataInitializer`.
+Users and sample transactions are seeded automatically on startup by `DataInitializer`.
+
+## Web Application Pages
+
+| Path | Description |
+|------|-------------|
+| `/login` | Sign in |
+| `/home` | Dashboard |
+| `/transactions?tab=history` | Transaction history |
+| `/transactions?tab=manage` | Create / edit / delete transactions |
+| `/transactions?tab=summary` | Account summary |
+| `/transactions?tab=transfer` | Online transfer |
+| `/security` | Account protection details |
+| `/spending` | Spending analysis |
+| `/admin` | Salary and incentive credits *(admin only)* |
+| `/session-expired` | Shown after session timeout |
+
+Top navigation provides **Home**, **History**, **Transfer**, **Security**, **Spending**, and **Administration** (admin only).
+
+## Performance Incentive Tiers
+
+| Rating | Suggested amount |
+|--------|------------------|
+| Outstanding | $1,500 |
+| Excellent | $1,000 |
+| Good | $500 |
+| Satisfactory | $250 |
+
+Amounts can be adjusted before submitting.
 
 ## Analytics API Endpoints
 
@@ -94,8 +154,8 @@ Users and sample transactions are seeded automatically on startup via `DataIniti
 
 - Java 21
 - Maven 3.9+
-- Python 3.12+
-- MySQL 8.x running on `localhost:3306`
+- Python 3.12+ *(analytics service only)*
+- MySQL 8.x on `localhost:3306`
 
 ### Database
 
@@ -103,7 +163,7 @@ Users and sample transactions are seeded automatically on startup via `DataIniti
 CREATE DATABASE bankdb;
 ```
 
-Update credentials in `src/main/resources/application.properties` if needed:
+Update `src/main/resources/application.properties` if needed:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/bankdb
@@ -112,7 +172,21 @@ spring.datasource.password=password
 server.port=8083
 ```
 
-### Run Spring Boot App
+Set seed passwords so demo users are created on startup:
+
+```properties
+app.seed.admin-password=admin123
+app.seed.default-password=admin123
+```
+
+Or export environment variables:
+
+```bash
+set APP_SEED_ADMIN_PASSWORD=admin123
+set APP_SEED_DEFAULT_PASSWORD=admin123
+```
+
+### Run Spring Boot
 
 ```bash
 mvn clean package -DskipTests
@@ -127,12 +201,6 @@ pip install -r requirements.txt
 python run.py
 ```
 
-Or:
-
-```bash
-uvicorn main:app --reload --port 8090
-```
-
 ## Project Structure
 
 ```
@@ -142,25 +210,21 @@ BankTransactionSystem/
 ├── pom.xml
 ├── src/main/java/com/bank/
 │   ├── BankApplication.java
-│   ├── config/          # Password & data seeding
-│   ├── controller/      # Login & transaction controllers
-│   ├── entity/          # User, Transaction JPA entities
-│   ├── repository/      # Spring Data JPA repositories
-│   ├── security/        # Spring Security config
-│   └── service/         # Business logic
+│   ├── config/           # Data seeding, nav model advice, password config
+│   ├── controller/       # Login, dashboard, transactions, admin
+│   ├── dto/              # Forms and account summary DTOs
+│   ├── entity/           # User, Transaction (with roles and credit/debit types)
+│   ├── repository/       # Spring Data JPA repositories
+│   ├── security/         # Security config, session handling, query param filter
+│   └── service/          # User, transaction, and admin business logic
 ├── src/main/resources/
 │   ├── application.properties
-│   ├── static/css/      # Stylesheets
-│   └── templates/       # Thymeleaf HTML pages
+│   ├── static/css/       # Application styles
+│   └── templates/        # Thymeleaf pages and nav fragment
 └── analytics-service/
     ├── Dockerfile
     ├── main.py
-    ├── run.py
-    └── app/
-        ├── main.py      # Analytics API routes
-        ├── analytics_service.py
-        ├── models.py
-        └── database.py
+    └── app/              # FastAPI routes and analytics logic
 ```
 
 ## Docker Services
@@ -169,7 +233,7 @@ BankTransactionSystem/
 |-----------|------|-------------|
 | bank-app | 8083 | Spring Boot web application |
 | bank-analytics | 8090 | Python analytics API |
-| bank-mysql | 3306 (internal) | MySQL database |
+| bank-mysql | 3306 *(internal)* | MySQL database |
 
 ## License
 

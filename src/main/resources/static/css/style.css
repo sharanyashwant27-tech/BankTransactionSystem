@@ -735,10 +735,6 @@ body.app-page {
     flex: 1 1 auto;
 }
 
-.tabs-back-home {
-    flex-shrink: 0;
-}
-
 .nav-links {
     margin: 0;
 }
@@ -2195,10 +2191,6 @@ body.app-page {
         min-width: 0;
         padding: 11px 12px;
         font-size: 0.82rem;
-    }
-
-    .tabs-back-home {
-        width: 100%;
     }
 
     .transfer-body {

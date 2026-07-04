@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,7 +20,9 @@ public class SensitiveQueryParamFilter extends OncePerRequestFilter {
     );
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         if ("GET".equalsIgnoreCase(request.getMethod()) && containsBlockedQueryParam(request)) {
             String cleanUrl = buildCleanUrl(request);
@@ -43,7 +46,11 @@ public class SensitiveQueryParamFilter extends OncePerRequestFilter {
     }
 
     private String buildCleanUrl(HttpServletRequest request) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(request.getRequestURI());
+        String requestUri = request.getRequestURI();
+        if (requestUri == null || requestUri.isBlank()) {
+            requestUri = "/";
+        }
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath(requestUri);
         request.getParameterMap().forEach((name, values) -> {
             if (!BLOCKED_PARAMS.contains(name.toLowerCase())) {
                 for (String value : values) {
