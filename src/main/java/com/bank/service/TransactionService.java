@@ -38,7 +38,7 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<String> getTransferRecipients(String currentUsername) {
         return userRepository.findAll().stream()
-                .map(User::getUsername)
+                .map(user -> user != null ? user.getUsername() : null)
                 .filter(name -> name != null && !name.equalsIgnoreCase(currentUsername))
                 .sorted(String.CASE_INSENSITIVE_ORDER)
                 .toList();

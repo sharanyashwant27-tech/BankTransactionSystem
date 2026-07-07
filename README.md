@@ -6,7 +6,8 @@ A full-stack personal banking web application with a Spring Boot UI and an optio
 
 ### Authentication & security
 - Form-based login with BCrypt password hashing (Spring Security)
-- Dedicated **login error page** when credentials are invalid, with a link back to sign in
+- Dedicated **login error page** (`/login-error`) when credentials are invalid, with a link back to sign in
+- Successful logout shows a confirmation message on the login page
 - Role-based access: **Administrator** and **Employee**
 - 2-minute session timeout with a dedicated session-expired page
 - Sensitive credentials blocked from GET query strings (username/password never accepted in URLs)
@@ -23,6 +24,7 @@ A full-stack personal banking web application with a Spring Boot UI and an optio
 ### Administration (admin user only)
 - **Credit Salary** — post a salary credit to any user on a chosen date
 - **Performance Incentive** — reward users by rating tier (Outstanding, Excellent, Good, Satisfactory) with suggested amounts
+- Credits can be issued to employees or to the administrator’s own account
 - Credits appear instantly on the recipient’s transaction history
 - Administrative credits cannot be deleted by recipients
 
@@ -75,6 +77,14 @@ docker compose logs -f bank-app
 docker compose up --build -d bank-app
 ```
 
+### First-time walkthrough
+
+1. Open http://localhost:8083/login
+2. Sign in as `admin` / `admin123` (administrator) or `admin1` / `admin123` (employee)
+3. Use the top navigation to open **History**, **Transfer**, **Security**, or **Spending**
+4. On the transactions page, switch tabs for **History**, **Manage Transactions**, **Bank Account Summary**, and **Online Transfer**
+5. As `admin`, open **Administration** to credit salary or performance incentives
+
 ## Login Credentials
 
 Docker sets seed passwords via environment variables (defaults shown below).
@@ -110,9 +120,14 @@ All employee accounts use password **`admin123`**.
 
 Users and sample transactions are seeded automatically on startup by `DataInitializer`.
 
-### Failed login
+### Authentication flow
 
-If username or password is incorrect, the app redirects to `/login-error` with a message that the user is not valid. Use **Return to Login** to try again.
+| Event | Result |
+|-------|--------|
+| Valid login | Redirect to `/home` |
+| Invalid login | Redirect to `/login-error` with “not a valid user” message and **Return to Login** link |
+| Logout | Redirect to `/login` with a success message |
+| Session timeout (2 min idle) | Redirect to `/session-expired`, then **Return to Login** |
 
 ## Web Application Pages
 
@@ -132,6 +147,15 @@ If username or password is incorrect, the app redirects to `/login-error` with a
 | `/return-to-login` | Clears session and returns to login |
 
 Top navigation provides **Home**, **History**, **Transfer**, **Security**, **Spending**, and **Administration** (admin only). Use these links to move between pages — there are no separate back-to-home buttons on child pages.
+
+### Transaction types
+
+| Type | Effect on balance |
+|------|-------------------|
+| **DEBIT** | Reduces available balance (user spending, outgoing transfers) |
+| **CREDIT** | Increases available balance (incoming transfers, salary, incentives) |
+
+**Balance formula:** `opening balance − debits + credits`
 
 ## Performance Incentive Tiers
 
@@ -178,6 +202,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/bankdb
 spring.datasource.username=root
 spring.datasource.password=password
 server.port=8083
+server.servlet.session.timeout=2m
 ```
 
 Set seed passwords so demo users are created on startup:
@@ -221,14 +246,23 @@ BankTransactionSystem/
 │   ├── config/           # Data seeding, nav model advice, password config
 │   ├── controller/       # Login, dashboard, transactions, admin
 │   ├── dto/              # Forms and account summary DTOs
-│   ├── entity/           # User, Transaction (with roles and credit/debit types)
+│   ├── entity/           # User, Transaction (roles, DEBIT/CREDIT types)
 │   ├── repository/       # Spring Data JPA repositories
-│   ├── security/         # Security config, session handling, query param filter
+│   ├── security/         # Security config, login handlers, query param filter
 │   └── service/          # User, transaction, and admin business logic
 ├── src/main/resources/
 │   ├── application.properties
 │   ├── static/css/       # Application styles
-│   └── templates/        # Thymeleaf pages (login, login-error, admin, etc.)
+│   └── templates/
+│       ├── admin.html
+│       ├── home.html
+│       ├── login.html
+│       ├── login-error.html
+│       ├── session-expired.html
+│       ├── security.html
+│       ├── spending.html
+│       ├── transactions.html
+│       └── fragments/nav.html
 └── analytics-service/
     ├── Dockerfile
     ├── main.py
@@ -242,6 +276,15 @@ BankTransactionSystem/
 | bank-app | 8083 | Spring Boot web application |
 | bank-analytics | 8090 | Python analytics API |
 | bank-mysql | 3306 *(internal)* | MySQL database |
+
+## Troubleshooting
+
+| Issue | What to try |
+|-------|-------------|
+| Login fails | Confirm username/password (`admin` / `admin123`). You will land on `/login-error`. |
+| Session expired quickly | Idle timeout is 2 minutes. Sign in again from `/login` or `/return-to-login`. |
+| Changes not visible | Rebuild: `docker compose up --build -d bank-app`, then hard refresh the browser. |
+| No demo users | Ensure `APP_SEED_ADMIN_PASSWORD` and `APP_SEED_DEFAULT_PASSWORD` are set (Docker sets both to `admin123` by default). |
 
 ## License
 
