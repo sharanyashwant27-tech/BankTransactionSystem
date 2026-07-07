@@ -30,7 +30,7 @@ public class SecurityConfig {
         return http
                 .addFilterBefore(sensitiveQueryParamFilter, org.springframework.security.web.context.SecurityContextHolderFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/return-to-login", "/session-expired", "/css/**", "/images/**")
+                        .requestMatchers("/login", "/login-error", "/return-to-login", "/session-expired", "/css/**", "/images/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

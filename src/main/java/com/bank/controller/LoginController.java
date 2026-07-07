@@ -14,17 +14,16 @@ public class LoginController {
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            if (Boolean.TRUE.equals(session.getAttribute(LoginRedirectHandlers.LOGIN_ERROR_ATTR))) {
-                model.addAttribute("loginError", true);
-                session.removeAttribute(LoginRedirectHandlers.LOGIN_ERROR_ATTR);
-            }
-            if (Boolean.TRUE.equals(session.getAttribute(LoginRedirectHandlers.LOGOUT_MESSAGE_ATTR))) {
-                model.addAttribute("logoutMessage", true);
-                session.removeAttribute(LoginRedirectHandlers.LOGOUT_MESSAGE_ATTR);
-            }
+        if (session != null && Boolean.TRUE.equals(session.getAttribute(LoginRedirectHandlers.LOGOUT_MESSAGE_ATTR))) {
+            model.addAttribute("logoutMessage", true);
+            session.removeAttribute(LoginRedirectHandlers.LOGOUT_MESSAGE_ATTR);
         }
         return "login";
+    }
+
+    @GetMapping("/login-error")
+    public String loginError() {
+        return "login-error";
     }
 
     @GetMapping("/session-expired")

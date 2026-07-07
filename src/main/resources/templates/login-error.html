@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Failed - Bank Transaction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="login-page login-error-page">
+
+<div class="login-wrapper session-expired-wrapper">
+    <div class="login-box session-expired-box">
+        <div class="login-brand">
+            <div class="login-logo login-error-logo">&#10060;</div>
+            <span class="page-kicker page-kicker-dark">Authentication failed</span>
+            <h2>Login Unsuccessful</h2>
+            <p class="login-subtitle">We could not verify your credentials.</p>
+        </div>
+
+        <p class="session-expired-message login-error-message">
+            This is not a valid user. Please check your username and password, then try signing in again.
+        </p>
+
+        <div class="session-expired-actions">
+            <a th:href="@{/login}" class="btn btn-primary session-expired-link">Return to Login</a>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

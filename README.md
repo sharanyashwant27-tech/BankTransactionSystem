@@ -6,16 +6,17 @@ A full-stack personal banking web application with a Spring Boot UI and an optio
 
 ### Authentication & security
 - Form-based login with BCrypt password hashing (Spring Security)
+- Dedicated **login error page** when credentials are invalid, with a link back to sign in
 - Role-based access: **Administrator** and **Employee**
 - 2-minute session timeout with a dedicated session-expired page
 - Sensitive credentials blocked from GET query strings (username/password never accepted in URLs)
 
 ### Banking (all users)
-- **Home dashboard** — quick access to history, security, and spending
+- **Home dashboard** — quick access to history, security, spending, and administration *(admin only)*
 - **Transaction History** — view debits and credits on your account
 - **Manage Transactions** — create, edit, and delete your own debit records
 - **Bank Account Summary** — opening balance, total spending, and amount left
-- **Online Transfer** — send money to another user with balance validation
+- **Online Transfer** — send money to another user with balance validation *(via top navigation)*
 - **Secure Access** — account and session details
 - **Track Spending** — totals, averages, and top expenses
 
@@ -50,6 +51,7 @@ docker compose up --build -d
 | Service | URL |
 |---------|-----|
 | Login | http://localhost:8083/login |
+| Login error | http://localhost:8083/login-error |
 | Home | http://localhost:8083/home |
 | Transactions | http://localhost:8083/transactions |
 | Administration | http://localhost:8083/admin *(admin only)* |
@@ -108,11 +110,16 @@ All employee accounts use password **`admin123`**.
 
 Users and sample transactions are seeded automatically on startup by `DataInitializer`.
 
+### Failed login
+
+If username or password is incorrect, the app redirects to `/login-error` with a message that the user is not valid. Use **Return to Login** to try again.
+
 ## Web Application Pages
 
 | Path | Description |
 |------|-------------|
 | `/login` | Sign in |
+| `/login-error` | Shown when authentication fails |
 | `/home` | Dashboard |
 | `/transactions?tab=history` | Transaction history |
 | `/transactions?tab=manage` | Create / edit / delete transactions |
@@ -122,8 +129,9 @@ Users and sample transactions are seeded automatically on startup by `DataInitia
 | `/spending` | Spending analysis |
 | `/admin` | Salary and incentive credits *(admin only)* |
 | `/session-expired` | Shown after session timeout |
+| `/return-to-login` | Clears session and returns to login |
 
-Top navigation provides **Home**, **History**, **Transfer**, **Security**, **Spending**, and **Administration** (admin only).
+Top navigation provides **Home**, **History**, **Transfer**, **Security**, **Spending**, and **Administration** (admin only). Use these links to move between pages — there are no separate back-to-home buttons on child pages.
 
 ## Performance Incentive Tiers
 
@@ -220,7 +228,7 @@ BankTransactionSystem/
 ├── src/main/resources/
 │   ├── application.properties
 │   ├── static/css/       # Application styles
-│   └── templates/        # Thymeleaf pages and nav fragment
+│   └── templates/        # Thymeleaf pages (login, login-error, admin, etc.)
 └── analytics-service/
     ├── Dockerfile
     ├── main.py

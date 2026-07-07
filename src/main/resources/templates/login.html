@@ -29,10 +29,6 @@
                 <p class="login-subtitle">Sign in to continue to your account</p>
             </div>
 
-            <p th:if="${loginError}" class="error-msg">
-                Invalid username or password. Please try again.
-            </p>
-
             <p th:if="${logoutMessage}" class="flash-msg flash-success">
                 You have been signed out successfully.
             </p>
@@ -57,7 +53,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block login-submit">Sign In</button>
+                <div class="session-expired-actions login-submit-row">
+                    <button type="submit" class="btn btn-primary session-expired-link">Sign In</button>
+                </div>
             </form>
 
             <p class="login-footer-note">Protected by encrypted credentials and timed sessions</p>

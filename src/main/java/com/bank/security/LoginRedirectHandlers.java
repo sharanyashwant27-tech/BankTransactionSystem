@@ -12,15 +12,13 @@ import java.io.IOException;
 @Component
 public class LoginRedirectHandlers implements AuthenticationFailureHandler, LogoutSuccessHandler {
 
-    public static final String LOGIN_ERROR_ATTR = "loginError";
     public static final String LOGOUT_MESSAGE_ATTR = "logoutMessage";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         org.springframework.security.core.AuthenticationException exception)
             throws IOException {
-        request.getSession().setAttribute(LOGIN_ERROR_ATTR, Boolean.TRUE);
-        response.sendRedirect(request.getContextPath() + "/login");
+        response.sendRedirect(request.getContextPath() + "/login-error");
     }
 
     @Override
