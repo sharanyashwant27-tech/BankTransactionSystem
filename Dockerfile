@@ -7,5 +7,10 @@ RUN mvn -q clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/bank-transaction-system-0.0.1-SNAPSHOT.jar app.jar
+COPY README.md ./README.md
+COPY docker/bootstrap.sh ./bootstrap.sh
+RUN sed -i 's/\r$//' bootstrap.sh \
+    && sed -i '1s/^\xEF\xBB\xBF//' bootstrap.sh \
+    && chmod +x bootstrap.sh
 EXPOSE 8083
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "bootstrap.sh"]

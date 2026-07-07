@@ -4,3 +4,4 @@ target/
 .vscode/
 analytics-service/
 *.md
+!README.md

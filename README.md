@@ -44,6 +44,25 @@ A full-stack personal banking web application with a Spring Boot UI and an optio
 
 **Requirements:** Docker and Docker Compose
 
+### Option 1: Bootstrap script (recommended)
+
+**Windows (PowerShell):**
+
+```powershell
+.\bootstrap.ps1
+```
+
+**Linux / macOS / Git Bash:**
+
+```bash
+chmod +x bootstrap.sh
+./bootstrap.sh
+```
+
+The bootstrap scripts build and start all Docker Compose services, then print login URLs and default credentials.
+
+### Option 2: Docker Compose directly
+
 ```bash
 git clone https://github.com/sharanyashwant27-tech/BankTransactionSystem.git
 cd BankTransactionSystem
@@ -75,6 +94,17 @@ docker compose logs -f bank-app
 
 ```bash
 docker compose up --build -d bank-app
+```
+
+The `bank-app` Docker image includes:
+- `app.jar` — Spring Boot application
+- `README.md` — project documentation at `/app/README.md` inside the container
+- `bootstrap.sh` — container entrypoint that prints quick links and starts the app
+
+To read the bundled README from a running container:
+
+```bash
+docker exec bank-app cat /app/README.md
 ```
 
 ### First-time walkthrough
@@ -240,7 +270,11 @@ python run.py
 
 ```
 BankTransactionSystem/
+├── bootstrap.ps1         # Windows bootstrap (build + start stack)
+├── bootstrap.sh          # Linux/macOS bootstrap (build + start stack)
 ├── Dockerfile
+├── docker/
+│   └── bootstrap.sh      # Container entrypoint (starts app.jar)
 ├── docker-compose.yml
 ├── pom.xml
 ├── src/main/java/com/bank/
