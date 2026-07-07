@@ -155,6 +155,8 @@ Top navigation provides **Home**, **History**, **Transfer**, **Security**, **Spe
 | **DEBIT** | Reduces available balance (user spending, outgoing transfers) |
 | **CREDIT** | Increases available balance (incoming transfers, salary, incentives) |
 
+Transactions with a missing type are treated as **DEBIT**. Account summary totals in `TransactionService` use null-safe stream filters when aggregating debits and credits.
+
 **Balance formula:** `opening balance − debits + credits`
 
 ## Performance Incentive Tiers

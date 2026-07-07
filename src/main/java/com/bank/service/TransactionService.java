@@ -51,11 +51,11 @@ public class TransactionService {
 
         double openingBalance = user.getOpeningBalance() != null ? user.getOpeningBalance() : 10000.0;
         double totalSpending = transactions.stream()
-                .filter(t -> !t.isCredit())
+                .filter(t -> t != null && !t.isCredit())
                 .mapToDouble(this::amountOrZero)
                 .sum();
         double totalCredits = transactions.stream()
-                .filter(Transaction::isCredit)
+                .filter(t -> t != null && t.isCredit())
                 .mapToDouble(this::amountOrZero)
                 .sum();
         double leftAmount = openingBalance - totalSpending + totalCredits;
